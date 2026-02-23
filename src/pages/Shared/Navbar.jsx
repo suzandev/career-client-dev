@@ -6,7 +6,7 @@ const navLinks = [
   { name: "Home", path: "/" },
   { name: "Jobs", path: "/jobs" },
   { name: "Employer", path: "/employer" },
-  { name: "Candidate", path: "/candidate" },
+
   { name: "Blog", path: "/blog" },
   { name: "Contact Us", path: "/contact" },
 ];
@@ -44,11 +44,11 @@ const Navbar = () => {
 
           {/* Logo */}
           <Link to="/" className="flex flex-col leading-tight">
-            <span className="text-2xl font-bold tracking-tight">
+            <span className="md:text-2xl font-bold tracking-tight">
               <span className="text-blue-600">Jobs</span>{" "}
               <span className="text-gray-900">Portal</span>
             </span>
-            <span className="text-xs text-gray-500 tracking-widest">
+            <span className="hidden md:flex justify-center items-center text-xs text-gray-500 tracking-widest">
               ONLINE JOBS FINDER
             </span>
           </Link>

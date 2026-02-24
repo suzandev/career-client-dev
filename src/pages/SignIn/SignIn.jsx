@@ -1,12 +1,15 @@
 import React, { useContext } from "react";
 import { FaFacebookF, FaTwitter, FaGoogle } from "react-icons/fa";
 import illustration from "../../assets/signIn.jpg";
-import { Link } from "react-router";
+import { Link, Navigate, useNavigate } from "react-router";
 import { FcGoogle } from "react-icons/fc";
 import { AuthContext } from "../../contexts/AuthContexts/AuthContext";
+import { toast } from "react-toastify";
 
 const SignIn = () => {
-  const { signInUser } = useContext(AuthContext);
+  const { signInUser, signInWithGoogle, signInWithFacebook } =
+    useContext(AuthContext);
+  const navigate = useNavigate();
 
   const handleSignIn = (e) => {
     e.preventDefault();
@@ -23,6 +26,31 @@ const SignIn = () => {
       })
       .catch((error) => {
         console.log("sign in error", error);
+      });
+  };
+
+  // Sign In With FaceBook
+  const handleSignInWithFacebook = () => {
+    signInWithFacebook()
+      .then(() => {
+        toast.success("FaceBook Login Successful 🎉");
+        navigate("/", { replace: true });
+      })
+      .catch((error) => {
+        toast.error(error.message);
+        console.log(error);
+      });
+  };
+
+  // Sign In With Google
+  const handleSignInWithGoogle = () => {
+    signInWithGoogle()
+      .then(() => {
+        toast.success("Google Login Successful 🎉");
+        navigate("/", { replace: true });
+      })
+      .catch((error) => {
+        toast.error(error.message);
       });
   };
 
@@ -82,13 +110,17 @@ const SignIn = () => {
             <div className="flex flex-col sm:flex-row items-center gap-4">
               <span className="text-sm text-gray-500">Or login with</span>
               <div className="flex gap-3">
-                <button className="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-full transition-colors cursor-pointer">
+                <button
+                  onClick={handleSignInWithFacebook}
+                  className="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-full transition-colors cursor-pointer">
                   <FaFacebookF />
                 </button>
                 <button className="bg-blue-400 hover:bg-blue-500 text-white p-2 rounded-full transition-colors cursor-pointer">
                   <FaTwitter />
                 </button>
-                <button className="bg-blue-200 hover:bg-blue-300 text-white p-2 rounded-full transition-colors cursor-pointer">
+                <button
+                  onClick={handleSignInWithGoogle}
+                  className="bg-blue-200 hover:bg-blue-300 text-white p-2 rounded-full transition-colors cursor-pointer">
                   <FcGoogle />
                 </button>
               </div>

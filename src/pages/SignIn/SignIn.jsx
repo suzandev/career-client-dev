@@ -5,6 +5,15 @@ import { Link } from "react-router";
 import { FcGoogle } from "react-icons/fc";
 
 const SignIn = () => {
+  const handleSignIn = (e) => {
+    e.preventDefault();
+
+    const form = e.target;
+    const email = form.email.value;
+    const password = form.password.value;
+    console.log(email, password);
+  };
+
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
       <div className="bg-white w-full max-w-5xl flex flex-col lg:flex-row rounded-xl shadow-xl overflow-hidden">
@@ -21,16 +30,18 @@ const SignIn = () => {
         <div className="lg:flex-1 p-8 sm:p-12 flex flex-col justify-center">
           <h2 className="text-3xl font-bold text-gray-900 mb-8">Sign In</h2>
 
-          <form className="flex flex-col gap-5">
+          <form onSubmit={handleSignIn} className="flex flex-col gap-5">
             <input
-              type="text"
-              placeholder="Username"
+              type="email"
+              name="email"
+              placeholder="Your Email"
               className="border-b-2 border-gray-300 focus:border-blue-500 outline-none py-2 px-1 text-gray-700 transition-all"
               required
             />
 
             <input
               type="password"
+              name="password"
               placeholder="Password"
               className="border-b-2 border-gray-300 focus:border-blue-500 outline-none py-2 px-1 text-gray-700 transition-all"
               required

@@ -1,18 +1,83 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useContext } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { FaUser, FaEnvelope, FaLock } from "react-icons/fa";
 import signupImage from "../../assets/registerImg.jpg";
+import { AuthContext } from "../../contexts/AuthContexts/AuthContext";
+
+import { toast } from "react-toastify";
 
 const Register = () => {
+  const { createUser } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  // const handleRegister = (e) => {
+  //   e.preventDefault();
+  //   // Add registration logic here
+  //   const form = e.target;
+  //   const name = form.name.value;
+  //   const email = form.email.value;
+  //   const password = form.password.value;
+  //   const confirmPassword = form.confirmPassword.value;
+  //   console.log(name, email, password, confirmPassword);
+  //   //create user
+  //   createUser(email, password)
+  //     .then((result) => {
+  //       console.log(result.user);
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //     });
+  // };
+
   const handleRegister = (e) => {
     e.preventDefault();
-    // Add registration logic here
+
     const form = e.target;
-    const name = form.name.value;
+    const userName = form.name.value;
     const email = form.email.value;
     const password = form.password.value;
     const confirmPassword = form.confirmPassword.value;
-    console.log(name, email, password, confirmPassword);
+    const terms = form.terms.checked;
+    console.log(userName);
+
+    // 🔐 Password validation regex
+    const passwordRegex =
+      /^(?=.*[0-9])(?=.*[!@#$%^&*])[A-Za-z0-9!@#$%^&*]{6,}$/;
+
+    // 1️⃣ Check password strength
+    if (!passwordRegex.test(password)) {
+      toast.error(
+        "Password must be at least 6 characters long, include at least one number and one special character.",
+      );
+      return;
+    }
+
+    // 2️⃣ Check password match
+    if (password !== confirmPassword) {
+      toast.error("Passwords do not match!");
+      return;
+    }
+
+    // 3️⃣ Check Terms & Conditions
+    if (!terms) {
+      toast.warning("Please accept the Terms & Service");
+      return;
+    }
+
+    // 4️⃣ Create User
+    createUser(email, password)
+      .then((result) => {
+        console.log(result.user);
+
+        toast.success("Registration Successful 🎉");
+        form.reset();
+        navigate("/", { replace: true });
+      })
+
+      .catch((error) => {
+        console.log(error);
+        toast.error(error.message);
+      });
   };
 
   return (
@@ -69,7 +134,11 @@ const Register = () => {
 
             {/* Terms */}
             <div className="flex items-center gap-2 text-sm text-gray-600">
-              <input type="checkbox" className="checkbox checkbox-sm" />
+              <input
+                type="checkbox"
+                name="terms"
+                className="checkbox checkbox-sm"
+              />
               <p>
                 I agree all statements in{" "}
                 <span className="text-blue-600 cursor-pointer hover:underline">
@@ -81,7 +150,7 @@ const Register = () => {
             {/* Button */}
             <button
               type="submit"
-              className="w-40 bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 rounded-lg transition duration-300 shadow-sm">
+              className="w-40 bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 rounded-lg transition duration-300 shadow-sm cursor-pointer">
               Register
             </button>
 

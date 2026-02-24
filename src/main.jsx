@@ -1,6 +1,7 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
+import "react-toastify/dist/ReactToastify.css";
 
 import router from "./router/Router.jsx";
 import { RouterProvider } from "react-router";

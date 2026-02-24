@@ -1,10 +1,13 @@
-import React from "react";
+import React, { useContext } from "react";
 import { FaFacebookF, FaTwitter, FaGoogle } from "react-icons/fa";
 import illustration from "../../assets/signIn.jpg";
 import { Link } from "react-router";
 import { FcGoogle } from "react-icons/fc";
+import { AuthContext } from "../../contexts/AuthContexts/AuthContext";
 
 const SignIn = () => {
+  const { signInUser } = useContext(AuthContext);
+
   const handleSignIn = (e) => {
     e.preventDefault();
 
@@ -12,6 +15,15 @@ const SignIn = () => {
     const email = form.email.value;
     const password = form.password.value;
     console.log(email, password);
+
+    // sign in user
+    signInUser(email, password)
+      .then((result) => {
+        console.log("signIn email", result);
+      })
+      .catch((error) => {
+        console.log("sign in error", error);
+      });
   };
 
   return (
@@ -70,13 +82,13 @@ const SignIn = () => {
             <div className="flex flex-col sm:flex-row items-center gap-4">
               <span className="text-sm text-gray-500">Or login with</span>
               <div className="flex gap-3">
-                <button className="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-full transition-colors">
+                <button className="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-full transition-colors cursor-pointer">
                   <FaFacebookF />
                 </button>
-                <button className="bg-blue-400 hover:bg-blue-500 text-white p-2 rounded-full transition-colors">
+                <button className="bg-blue-400 hover:bg-blue-500 text-white p-2 rounded-full transition-colors cursor-pointer">
                   <FaTwitter />
                 </button>
-                <button className="bg-gray-600 hover:bg-gray-900 text-white p-2 rounded-full transition-colors">
+                <button className="bg-blue-200 hover:bg-blue-300 text-white p-2 rounded-full transition-colors cursor-pointer">
                   <FcGoogle />
                 </button>
               </div>

@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { FaBars, FaUserCircle } from "react-icons/fa";
+import { AuthContext } from "../../contexts/AuthContexts/AuthContext";
 
 const navLinks = [
   { name: "Home", path: "/" },
@@ -12,6 +13,18 @@ const navLinks = [
 ];
 
 const Navbar = () => {
+  const { user, logout } = useContext(AuthContext);
+
+  const handleLogout = () => {
+    logout()
+      .then(() => {
+        console.log("User logged out");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   return (
     <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-200">
       <div className="navbar max-w-7xl mx-auto px-4 lg:px-8">
@@ -75,24 +88,44 @@ const Navbar = () => {
 
         {/* ============ RIGHT SECTION ============ */}
         <div className="navbar-end items-center gap-4">
-          {/* Sign In */}
-          <Link
-            to="/signin"
-            className="hidden sm:inline-flex px-6 py-2 rounded-full border border-blue-600 text-blue-600 font-medium hover:bg-blue-600 hover:text-white transition duration-300">
-            Sign In
-          </Link>
+          {user ? (
+            <>
+              {/* User Info */}
+              <div className="hidden md:flex items-center gap-3 px-3 py-1 rounded-full bg-gray-100">
+                <img
+                  src={user.photoURL || "https://i.ibb.co/4pDNDk1/avatar.png"}
+                  alt="User"
+                  className="w-8 h-8 rounded-full object-cover"
+                />
+                <span className="text-sm font-medium text-gray-700">
+                  {user.email}
+                </span>
+              </div>
 
-          {/* Register */}
-          <Link
-            to="/register"
-            className="px-6 py-2 rounded-full bg-green-500 text-white font-medium hover:bg-green-600 transition duration-300 shadow-sm">
-            Register
-          </Link>
+              {/* Logout Button */}
+              <button
+                onClick={handleLogout}
+                className="px-5 py-2 rounded-full bg-red-500 text-white font-medium hover:bg-red-600 transition duration-300 shadow-sm">
+                Logout
+              </button>
+            </>
+          ) : (
+            <>
+              {/* Sign In */}
+              <Link
+                to="/signin"
+                className="hidden sm:inline-flex px-6 py-2 rounded-full border border-blue-600 text-blue-600 font-medium hover:bg-blue-600 hover:text-white transition duration-300">
+                Sign In
+              </Link>
 
-          {/* Avatar */}
-          <button className="hidden md:flex items-center justify-center w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 transition">
-            <FaUserCircle className="text-xl text-gray-600" />
-          </button>
+              {/* Register */}
+              <Link
+                to="/register"
+                className="px-6 py-2 rounded-full bg-blue-500 text-white font-medium hover:bg-blue-600 transition duration-300 shadow-sm">
+                Register
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </header>

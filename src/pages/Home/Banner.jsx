@@ -1,5 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
+import team1Img from "../../assets/celebrationImg.jpg";
+import team2Img from "../../assets/women-in-business.jpg";
 import {
   FaSearch,
   FaBriefcase,
@@ -139,7 +141,7 @@ const Banner = () => {
           <motion.img
             animate={{ y: [0, -15, 0] }}
             transition={{ duration: 4, repeat: Infinity }}
-            src="https://i.ibb.co/DTwPztK/celebration-Img.jpg"
+            src={team1Img}
             alt="Team"
             className="rounded-3xl shadow-2xl"
           />
@@ -147,7 +149,7 @@ const Banner = () => {
           <motion.img
             animate={{ y: [0, 15, 0] }}
             transition={{ duration: 5, repeat: Infinity }}
-            src="https://i.ibb.co/Xk4LHNSG/women-in-business.jpg"
+            src={team2Img}
             alt="Business"
             className="absolute -bottom-10 -right-10 w-2/4 rounded-3xl shadow-xl border-4 border-white"
           />

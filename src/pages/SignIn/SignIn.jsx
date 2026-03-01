@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { FaFacebookF, FaTwitter, FaGoogle } from "react-icons/fa";
 import illustration from "../../assets/signIn.jpg";
-import { Link, Navigate, useNavigate } from "react-router";
+import { Link, Navigate, useLocation, useNavigate } from "react-router";
 import { FcGoogle } from "react-icons/fc";
 import { AuthContext } from "../../contexts/AuthContexts/AuthContext";
 import { toast } from "react-toastify";
@@ -10,6 +10,8 @@ const SignIn = () => {
   const { signInUser, signInWithGoogle, signInWithFacebook } =
     useContext(AuthContext);
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state || "/";
 
   const handleSignIn = (e) => {
     e.preventDefault();
@@ -23,6 +25,7 @@ const SignIn = () => {
     signInUser(email, password)
       .then((result) => {
         console.log("signIn email", result);
+        navigate(from);
       })
       .catch((error) => {
         console.log("sign in error", error);
@@ -34,7 +37,7 @@ const SignIn = () => {
     signInWithFacebook()
       .then(() => {
         toast.success("FaceBook Login Successful 🎉");
-        navigate("/", { replace: true });
+        navigate(from || "/", { replace: true });
       })
       .catch((error) => {
         toast.error(error.message);
@@ -47,7 +50,7 @@ const SignIn = () => {
     signInWithGoogle()
       .then(() => {
         toast.success("Google Login Successful 🎉");
-        navigate("/", { replace: true });
+        navigate(from || "/", { replace: true });
       })
       .catch((error) => {
         toast.error(error.message);

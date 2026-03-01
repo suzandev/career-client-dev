@@ -15,6 +15,7 @@ const JobDetails = () => {
   const job = useLoaderData();
 
   const {
+    _id,
     title,
     location,
     jobType,
@@ -114,9 +115,11 @@ const JobDetails = () => {
             </span>
           </div>
 
-          <button className="w-full bg-indigo-600 hover:bg-indigo-700 transition text-white font-semibold py-3 rounded-xl shadow-lg">
-            Apply Now
-          </button>
+          <Link to={`/jobApply/${_id}`}>
+            <button className="w-full bg-indigo-600 hover:bg-indigo-700 transition text-white font-semibold py-3 rounded-xl shadow-lg">
+              Apply Now
+            </button>
+          </Link>
 
           <button className="w-full flex items-center justify-center gap-2 border border-indigo-500 text-indigo-600 font-semibold py-3 rounded-xl hover:bg-indigo-50 transition">
             <FaBookmark />

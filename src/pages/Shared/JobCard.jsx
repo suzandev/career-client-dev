@@ -1,8 +1,10 @@
 import React from "react";
 import { FaMapMarkerAlt, FaBriefcase, FaMoneyBillWave } from "react-icons/fa";
+import { Link } from "react-router";
 
 const JobCard = ({ job }) => {
   const {
+    _id,
     title,
     location,
     jobType,
@@ -66,9 +68,11 @@ const JobCard = ({ job }) => {
       </p>
 
       {/* Button */}
-      <button className="w-full bg-primary text-white py-2 rounded-xl font-semibold hover:bg-primary/90 transition">
-        Apply Now
-      </button>
+      <Link to={`/jobs/${_id}`}>
+        <button className="w-full bg-primary text-white py-2 rounded-xl font-semibold hover:bg-primary/90 transition cursor-pointer">
+          Show Details
+        </button>
+      </Link>
     </div>
   );
 };

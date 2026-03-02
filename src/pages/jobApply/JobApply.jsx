@@ -24,7 +24,7 @@ const JobApply = () => {
     const resume = form.resume.value;
     const coverLetter = form.coverLetter.value;
 
-    console.log({ name, email, phone, resume, coverLetter });
+    console.log({ email });
 
     const application = {
       jobId,
@@ -44,6 +44,8 @@ const JobApply = () => {
             title: "Your work has been saved",
             showConfirmButton: false,
             timer: 1500,
+          }).then(() => {
+            navigate("/");
           });
         }
       })

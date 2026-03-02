@@ -121,7 +121,7 @@ const JobDetails = () => {
             </button>
           </Link>
 
-          <button className="w-full flex items-center justify-center gap-2 border border-indigo-500 text-indigo-600 font-semibold py-3 rounded-xl hover:bg-indigo-50 transition">
+          <button className="w-full flex items-center justify-center gap-2 border border-indigo-500 text-indigo-600 font-semibold py-3 rounded-xl hover:bg-indigo-50 transition mt-3">
             <FaBookmark />
             Save Job
           </button>

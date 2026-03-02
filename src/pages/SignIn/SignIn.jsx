@@ -5,6 +5,7 @@ import { Link, Navigate, useLocation, useNavigate } from "react-router";
 import { FcGoogle } from "react-icons/fc";
 import { AuthContext } from "../../contexts/AuthContexts/AuthContext";
 import { toast } from "react-toastify";
+import Swal from "sweetalert2";
 
 const SignIn = () => {
   const { signInUser, signInWithGoogle, signInWithFacebook } =
@@ -29,6 +30,12 @@ const SignIn = () => {
       })
       .catch((error) => {
         console.log("sign in error", error);
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Something went wrong!",
+          footer: error,
+        });
       });
   };
 

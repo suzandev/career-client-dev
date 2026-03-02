@@ -13,6 +13,9 @@ const navLinks = [
 
 const Navbar = () => {
   const { user, logout } = useContext(AuthContext);
+  const updatedNavLinks = user
+    ? [...navLinks, { name: "My Applications", path: "/myApplications" }]
+    : navLinks;
 
   const handleLogout = () => {
     logout()
@@ -38,7 +41,7 @@ const Navbar = () => {
             <ul
               tabIndex={0}
               className="menu menu-sm dropdown-content mt-3 p-4 shadow-lg bg-white rounded-box w-56 space-y-2">
-              {navLinks.map((link) => (
+              {updatedNavLinks.map((link) => (
                 <li key={link.name}>
                   <NavLink
                     to={link.path}
@@ -69,7 +72,7 @@ const Navbar = () => {
         {/* ============ CENTER SECTION (Desktop) ============ */}
         <nav className="navbar-center hidden lg:flex">
           <ul className="flex items-center gap-8 font-medium text-gray-700">
-            {navLinks.map((link) => (
+            {updatedNavLinks.map((link) => (
               <li key={link.name}>
                 <NavLink
                   to={link.path}

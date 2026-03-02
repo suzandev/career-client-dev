@@ -43,5 +43,3 @@ const Router = createBrowserRouter([
 ]);
 
 export default Router;
-
-// ========= 4.20

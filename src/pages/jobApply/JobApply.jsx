@@ -3,6 +3,8 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaTimes, FaUser, FaEnvelope, FaPhone } from "react-icons/fa";
+import axios from "axios";
+import Swal from "sweetalert2";
 
 const JobApply = () => {
   const navigate = useNavigate();
@@ -23,6 +25,36 @@ const JobApply = () => {
     const coverLetter = form.coverLetter.value;
 
     console.log({ name, email, phone, resume, coverLetter });
+
+    const application = {
+      jobId,
+      applicant: user.email,
+      name,
+      phone,
+      resume,
+      coverLetter,
+    };
+    axios
+      .post("http://localhost:3000/applications", application)
+      .then((res) => {
+        if (res.data.insertedId) {
+          Swal.fire({
+            position: "top-end",
+            icon: "success",
+            title: "Your work has been saved",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        }
+      })
+      .catch((error) => {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Something went wrong!",
+          footer: error,
+        });
+      });
   };
 
   return (

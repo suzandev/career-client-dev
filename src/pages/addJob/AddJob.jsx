@@ -1,77 +1,75 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "react-toastify";
+import useAuth from "../../hooks/useAuth";
 
 const AddJob = () => {
+  const { user } = useAuth();
   const [step, setStep] = useState(1);
   const [logoPreview, setLogoPreview] = useState("");
+  const [formData, setFormData] = useState({});
 
+  // Save step data before next
   const nextStep = (e) => {
     e.preventDefault();
     const form = e.target.form;
 
-    // ================= STEP 1 =================
+    const stepData = Object.fromEntries(new FormData(form).entries());
+    setFormData((prev) => ({ ...prev, ...stepData }));
+
+    // ================= STEP 1 VALIDATION =================
     if (step === 1) {
-      if (!form.title.value.trim()) {
+      if (!stepData.title?.trim()) {
         toast.error("Job title is required 🚨");
         return;
       }
-
-      if (!form.company.value.trim()) {
+      if (!stepData.company?.trim()) {
         toast.error("Company name is required 🏢");
         return;
       }
     }
 
-    // ================= STEP 2 =================
+    // ================= STEP 2 VALIDATION =================
     if (step === 2) {
-      if (!form.salaryMin.value || !form.salaryMax.value) {
+      if (!stepData.salaryMin || !stepData.salaryMax) {
         toast.error("Salary range is required 💰");
         return;
       }
-      if (Number(form.salaryMin.value) > Number(form.salaryMax.value)) {
+      if (Number(stepData.salaryMin) > Number(stepData.salaryMax)) {
         toast.error("Minimum salary cannot be greater than maximum salary ❌");
         return;
       }
-
-      if (!form.deadline.value) {
+      if (!stepData.deadline) {
         toast.error("Application deadline is required 📅");
         return;
       }
-
-      if (!form.description.value.trim()) {
+      if (!stepData.description?.trim()) {
         toast.error("Job description is required 📝");
         return;
       }
     }
 
-    // ================= STEP 3 =================
+    // ================= STEP 3 VALIDATION =================
     if (step === 3) {
-      if (!form.requirements.value.trim()) {
-        toast.error("Requirements field cannot be empty 📌");
+      if (!stepData.requirements?.trim()) {
+        toast.error("Requirements cannot be empty 📌");
         return;
       }
-
-      if (!form.responsibilities.value.trim()) {
-        toast.error("Responsibilities field cannot be empty 🎯");
+      if (!stepData.responsibilities?.trim()) {
+        toast.error("Responsibilities cannot be empty 🎯");
         return;
       }
-
-      if (!form.hr_name.value.trim()) {
+      if (!stepData.hr_name?.trim()) {
         toast.error("HR name is required 👤");
         return;
       }
-
-      if (!form.hr_email.value.trim()) {
+      if (!stepData.hr_email?.trim()) {
         toast.error("HR email is required 📧");
         return;
       }
     }
 
-    // If everything valid
-    if (step < 3) {
-      setStep(step + 1);
-    }
+    if (step < 3) setStep(step + 1);
   };
 
   const prevStep = () => {
@@ -80,34 +78,41 @@ const AddJob = () => {
 
   const handleLogoChange = (e) => {
     setLogoPreview(e.target.value);
+    setFormData((prev) => ({ ...prev, company_logo: e.target.value }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const form = e.target;
 
+    // Use formData state to get all steps data
+    const finalData = { ...formData };
+
+    // Make sure requirements/responsibilities are arrays
     const jobData = {
-      title: form.title.value,
-      company: form.company.value,
-      location: form.location.value,
-      jobType: form.jobType.value,
-      category: form.category.value,
-      company_logo: form.company_logo.value,
+      title: finalData.title,
+      company: finalData.company,
+      location: finalData.location,
+      jobType: finalData.jobType,
+      category: finalData.category,
+      company_logo: finalData.company_logo,
       salaryRange: {
-        min: form.salaryMin.value,
-        max: form.salaryMax.value,
-        currency: "bdt",
+        min: Number(finalData.salaryMin),
+        max: Number(finalData.salaryMax),
+        currency: finalData.currency || "bdt",
       },
-      applicationDeadline: form.deadline.value,
-      status: form.status.value,
-      description: form.description.value,
-      requirements: form.requirements.value.split(","),
-      responsibilities: form.responsibilities.value.split(","),
-      hr_name: form.hr_name.value,
-      hr_email: form.hr_email.value,
+      applicationDeadline: finalData.deadline,
+      status: finalData.status,
+      description: finalData.description,
+      requirements:
+        finalData.requirements?.split(",").map((r) => r.trim()) || [],
+      responsibilities:
+        finalData.responsibilities?.split(",").map((r) => r.trim()) || [],
+      hr_name: finalData.hr_name || user?.name || "",
+      hr_email: finalData.hr_email || user?.email || "",
     };
 
-    console.log(jobData);
+    console.log("💎 Job Submitted:", jobData);
+    toast.success("Job Added Successfully 🎉", { theme: "colored" });
   };
 
   return (
@@ -141,26 +146,28 @@ const AddJob = () => {
                 <div className="grid md:grid-cols-2 gap-6">
                   <input
                     name="title"
+                    defaultValue={formData.title || ""}
                     placeholder="Job Title"
-                    required
                     className="input input-bordered w-full"
                   />
 
                   <input
                     name="company"
+                    defaultValue={formData.company || ""}
                     placeholder="Company Name"
-                    required
                     className="input input-bordered w-full"
                   />
 
                   <input
                     name="location"
+                    defaultValue={formData.location || ""}
                     placeholder="Location"
                     className="input input-bordered w-full"
                   />
 
                   <select
                     name="jobType"
+                    defaultValue={formData.jobType || ""}
                     className="select select-bordered w-full">
                     <option value="">Job Type</option>
                     <option>Remote</option>
@@ -170,6 +177,7 @@ const AddJob = () => {
 
                   <input
                     name="category"
+                    defaultValue={formData.category || ""}
                     placeholder="Category"
                     className="input input-bordered w-full"
                   />
@@ -179,6 +187,7 @@ const AddJob = () => {
                       name="company_logo"
                       placeholder="Company Logo URL"
                       onChange={handleLogoChange}
+                      value={formData.company_logo || ""}
                       className="input input-bordered w-full"
                     />
                     {logoPreview && (
@@ -198,6 +207,7 @@ const AddJob = () => {
                   <input
                     name="salaryMin"
                     type="number"
+                    defaultValue={formData.salaryMin || ""}
                     placeholder="Salary Min"
                     className="input input-bordered w-full"
                   />
@@ -205,18 +215,30 @@ const AddJob = () => {
                   <input
                     name="salaryMax"
                     type="number"
+                    defaultValue={formData.salaryMax || ""}
                     placeholder="Salary Max"
                     className="input input-bordered w-full"
                   />
 
+                  <select
+                    name="currency"
+                    defaultValue={formData.currency || "bdt"}
+                    className="select select-bordered w-full">
+                    <option value="bdt">BDT</option>
+                    <option value="usd">USD</option>
+                    <option value="eur">EUR</option>
+                  </select>
+
                   <input
                     name="deadline"
                     type="date"
+                    defaultValue={formData.deadline || ""}
                     className="input input-bordered w-full"
                   />
 
                   <select
                     name="status"
+                    defaultValue={formData.status || ""}
                     className="select select-bordered w-full">
                     <option value="">Status</option>
                     <option>active</option>
@@ -225,6 +247,7 @@ const AddJob = () => {
 
                   <textarea
                     name="description"
+                    defaultValue={formData.description || ""}
                     placeholder="Job Description"
                     className="textarea textarea-bordered md:col-span-2 w-full"></textarea>
                 </div>
@@ -235,16 +258,39 @@ const AddJob = () => {
                 <div className="grid md:grid-cols-2 gap-6">
                   <textarea
                     name="requirements"
-                    placeholder="Requirements (comma separated)"
-                    className="textarea textarea-bordered w-full"></textarea>
+                    value={formData.requirements || ""}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        requirements: e.target.value,
+                      }))
+                    }
+                    placeholder="Job Requirements (comma separated)"
+                    className="textarea textarea-bordered w-full"
+                  />
 
                   <textarea
                     name="responsibilities"
+                    value={formData.responsibilities || ""}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        responsibilities: e.target.value,
+                      }))
+                    }
                     placeholder="Responsibilities (comma separated)"
-                    className="textarea textarea-bordered w-full"></textarea>
+                    className="textarea textarea-bordered w-full"
+                  />
 
                   <input
                     name="hr_name"
+                    value={formData.hr_name || user?.name || ""}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        hr_name: e.target.value,
+                      }))
+                    }
                     placeholder="HR Name"
                     className="input input-bordered w-full"
                   />
@@ -252,6 +298,13 @@ const AddJob = () => {
                   <input
                     name="hr_email"
                     type="email"
+                    value={formData.hr_email || user?.email || ""}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        hr_email: e.target.value,
+                      }))
+                    }
                     placeholder="HR Email"
                     className="input input-bordered w-full"
                   />

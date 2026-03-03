@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useMemo } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { FaBars, FaUserCircle } from "react-icons/fa";
 import { AuthContext } from "../../contexts/AuthContexts/AuthContext";
@@ -13,9 +13,25 @@ const navLinks = [
 
 const Navbar = () => {
   const { user, logout } = useContext(AuthContext);
-  const updatedNavLinks = user
-    ? [...navLinks, { name: "My Applications", path: "/myApplications" }]
-    : navLinks;
+
+  const updatedNavLinks = useMemo(() => {
+    let links = [...navLinks];
+
+    // for Admin
+    if (user?.role === "admin") {
+      links.push({ name: "Add Job", path: "/addJob" });
+    }
+
+    // for Applicant
+    if (user?.role === "applicant") {
+      links.push({
+        name: "My Applications",
+        path: "/myApplications",
+      });
+    }
+
+    return links;
+  }, [user]);
 
   const handleLogout = () => {
     logout()

@@ -6,8 +6,9 @@ import { AuthContext } from "../../contexts/AuthContexts/AuthContext";
 const navLinks = [
   { name: "Home", path: "/" },
   { name: "Jobs", path: "/jobs" },
-  { name: "Employer", path: "/employer" },
-  { name: "Blog", path: "/blog" },
+  { name: "My Applications", path: "/myApplications" },
+  { name: "Add Jobs", path: "/addJob" },
+  { name: "My Posted Jobs", path: "/myPostedJobs" },
   { name: "Contact Us", path: "/contact" },
 ];
 
@@ -17,17 +18,14 @@ const Navbar = () => {
   const updatedNavLinks = useMemo(() => {
     let links = [...navLinks];
 
-    // for Admin
-    if (user?.role === "admin") {
+    // user.roles = ["admin", "recruiter"]
+    if (user?.roles?.includes("admin") || user?.roles?.includes("recruiter")) {
       links.push({ name: "Add Job", path: "/addJob" });
+      links.push({ name: "My Posted Jobs", path: "/myPostedJobs" });
     }
 
-    // for Applicant
     if (user?.role === "applicant") {
-      links.push({
-        name: "My Applications",
-        path: "/myApplications",
-      });
+      links.push({ name: "My Applications", path: "/myApplications" });
     }
 
     return links;

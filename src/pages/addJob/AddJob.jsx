@@ -2,8 +2,12 @@ import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "react-toastify";
 import useAuth from "../../hooks/useAuth";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const AddJob = () => {
+  const navigate = useNavigate();
   const { user } = useAuth();
   const [step, setStep] = useState(1);
   const [logoPreview, setLogoPreview] = useState("");
@@ -12,6 +16,7 @@ const AddJob = () => {
   // Save step data before next
   const nextStep = (e) => {
     e.preventDefault();
+
     const form = e.target.form;
 
     const stepData = Object.fromEntries(new FormData(form).entries());
@@ -112,7 +117,23 @@ const AddJob = () => {
     };
 
     console.log("💎 Job Submitted:", jobData);
-    toast.success("Job Added Successfully 🎉", { theme: "colored" });
+
+    // save job to the database
+    axios
+      .post("http://localhost:3000/jobs", jobData)
+      .then((res) => {
+        console.log(res);
+        if (res.data.insertedId) {
+          toast.success("Job Added Successfully 🎉", { theme: "colored" });
+
+          navigate("/");
+        }
+      })
+      .catch((error) => {
+        toast.error(`🦄 Oops! Something went wrong: ${error}`, {
+          theme: "colored",
+        });
+      });
   };
 
   return (

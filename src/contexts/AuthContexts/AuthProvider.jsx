@@ -45,6 +45,7 @@ const AuthProvider = ({ children }) => {
   // ====== Log Out =====
   const logout = () => {
     setLoading(true);
+    localStorage.removeItem("token");
     return signOut(auth);
   };
 
@@ -52,19 +53,25 @@ const AuthProvider = ({ children }) => {
     const unSubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
       setLoading(false);
+
       if (currentUser?.email) {
         const userData = { email: currentUser.email };
+
         axios
-          .post("http://localhost:3000/jwt", userData)
+          .post("http://localhost:3000/jwt", userData, {
+            withCredentials: true,
+          })
           .then((res) => {
-            console.log("after jwt token", res);
             const token = res.data.token;
             localStorage.setItem("token", token);
           })
           .catch((error) => console.log(error));
+      } else {
+        localStorage.removeItem("token");
       }
     });
-    return unSubscribe;
+
+    return () => unSubscribe();
   }, []);
 
   const authInfo = {
@@ -77,7 +84,9 @@ const AuthProvider = ({ children }) => {
     signInWithGoogle,
   };
 
-  return <AuthContext value={authInfo}>{children}</AuthContext>;
+  return (
+    <AuthContext.Provider value={authInfo}>{children}</AuthContext.Provider>
+  );
 };
 
 export default AuthProvider;

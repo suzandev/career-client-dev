@@ -12,7 +12,7 @@ const JobApply = () => {
 
   const { user } = useAuth();
 
-  console.log(jobId, user);
+  // console.log(jobId, user);
 
   const handleSubmit = (e) => {
     e.preventDefault();

@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import useAuth from "../../hooks/useAuth";
 import ApplicationsStats from "./ApplicationsStats";
@@ -10,7 +10,9 @@ const MyApplications = () => {
   useEffect(() => {
     if (user?.email) {
       axios
-        .get(`http://localhost:3000/applications?email=${user.email}`)
+        .get(`http://localhost:3000/applications?email=${user.email}`, {
+          withCredentials: true,
+        })
         .then((res) => setApplications(res.data));
     }
   }, [user?.email]);
